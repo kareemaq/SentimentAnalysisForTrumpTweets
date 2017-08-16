@@ -1,8 +1,6 @@
 Project by: Abdulkareem Alqusair
-ID: 26726246
 
 Instruction to run webpage: open index.html (need local host server before if using chrome).
-
 
 Information about files:
 
