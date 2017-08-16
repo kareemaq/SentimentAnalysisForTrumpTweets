@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	
+	<meta charset="utf-8">
+    <title>sentiment Analysis</title>
+	<!--CDN for D3-->
+	<script src="http://d3js.org/d3.v3.min.js"></script>
+	<!--CDN for jQuery-->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<!--TopoJson dependancy for DataMap-->
+	<script src="topojson.js"></script>
+	<!--DataMap Source code-->
+	<script src="datamaps.world.js"></script>
+	<!--Jason Davis Word Cloud Source code-->
+	<script src="d3.layout.cloud.js"></script>	
+	<link href="https://d3-geomap.github.io//d3-geomap/css/d3.geomap.css" rel="stylesheet">
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+	<!--CSS and Script for a cool looking popup-->
+	<script src="sweetalert.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="sweetalert.css">
+	<link rel="stylesheet" href="font-awesome.min.css">
+<!--Just to make the map size fixed and in the middle of  the screen-->
+<style>
+#map{
+position: center;
+    top: 50%;
+    left: 50%;
+    margin-top: -22px;
+    margin-left: -570px;
+    width: 90%;
+    height: 475px;
+}
+blockquote{
+  margin: 20px 0;
+  padding-left: 1.5rem;
+  border-left: 5px solid #64b5f6; 
+}
+
+</style>
+	</head>
+
+
+
+<body style="margin:0;">
+
+<div id="loader"></div>
+
+
+<div class="container-fluid" id = "myPage">
+<div class="center">
+<div class="row-md">
+<div class="span12"> 
+<div class="col-md-10 col-md-offset-2">
+<h1>Sentiment analysis of tweets about <mark>Trump</mark> <br><br></h1>
+<img src="main.jpeg" alt="..." class="img-rounded">
+</div></div></div>
+
+<div class="row-md">
+<div class="col-md-10 col-md-offset-2">
+<h2> Introduction</h2> 
+<p>This page will walk you through an analysis of a data set of tweets that have mentioned the current president of the united states <br>
+"Donald Trump" from allover the world. The analysis will include a sentiment analysis of the tweets to check the polarity of the tweets.<br>
+Aditionally, there will be a map that will demonstrate supportave are the tweets from each country and word clouds to present 
+the <br>most frequent words.<br><br></p>
+</div></div>
+
+<div class="row-md">
+<div class="col-md-10 col-md-offset-2">
+<h2> Data Set</h2> 
+<p>The Data set is obtained from streaming using the "Twitter API" and the data is only from a 5 hour period pulled on March-23-17.<br>
+from 8pm to 12 pm Greenwich Mean Time (GMT+11). The data contains more than 20,000 distinct tweets with its corresponding data<br> including but not limited to:
+<ul>
+  <li>Text.</li>
+  <li>Location.</li>
+  <li>Polarity; which resembeles the sentiment score of the tweet in a range from -3 being mos negative sentiment to 3 being most <br>positive sentiment.</li>
+  <li>user.</li>
+</ul><br>
+The purpose of the project is to show what can be done with such data.<br><br></p>
+</div></div>
+
+<div class="row-md">
+<div class="col-md-10 col-md-offset-2">
+<h2> World Map</h2> 
+<p>The following is a map of the world that demonstrates the polarity of tweets for the different countries <br>
+the more green countries has the most positive tweets and the more red a country is the more negative are the tweets.<br>
+When you hover over a specific country you can see aditional details. <br>The sizes of 
+the bubles on the map are porportional to the number of tweets for the country.<br>
+Also on the top of the map there is a summary data for the polarity all over the countries displayed as percentages.
+<br><strong> Please note:<br>
+<ul>
+  <li>The summary statistcs above the map is calculated from all the tweets in the dataset.</li>
+  <li>The color of the regions resembles the polarity.</li>
+  <li>The bubles on the map are porportional to the number of tweets for the country.</li>
+</ul>
+</strong> </p>
+
+<blockquote>
+<p>Observations:</p>
+<small>From the map we can see that Australia and India have the most tweets in the dataset, this might be because of the time when the <br>
+tweets were pulled which was around 8pm to 12 pm Greenwich Mean Time (GMT+11).</small>
+<small>Argentina and France are the most positive countries regarding this topic in the given time period of the tweets.</small>
+<small>Chile, Senegal, and egypt are some of the countries with low polarity.</small>
+</blockquote>
+<br><br>
+</div></div>
+
+<div class="row-md">
+<div class="col-md-8 col-md-offset-4">
+<span class="label label-success" id = "tpos"></span>
+<span class="label label-warning" id = "tneu"></span>
+<span class="label label-danger" id = "tneg"></span><br><br><br><br>
+</div></div>
+
+<div class="row-md">
+<div id = "map"  class="col-md-12 col-md-offset-0" >
+</div></div>
+
+<div class="row-md">
+<div class="col-md-10 col-md-offset-2">
+<br><br><br><br><h2> Word Cloud</h2> 
+<p>The following is a word cloud that demonstrates the most frequent words from tweets that has "trump" mentioned in them<br>
+the words all from all the countries wether the tweets were positive or negative.<br>
+The size of the word is proportional to the frequency of appearance of this word in all tweets.</p>
+
+<blockquote>
+<p>Observations:</p>
+<small>The word 'Cuts' appreas to be the most frequent word over all the tweets which may refer to the budget cuts click <a href="https://www.washingtonpost.com/graphics/politics/trump-presidential-budget-2018-proposal/?utm_term=.8750bbd0000a">here</a> for more details..</small>
+<small>There are some emojis in the cloud which may reseble words, for example the pointing finger may mean a link to a website<br>
+or it may mean to look at a picture including within the tweet.</small>
+</blockquote>
+<br><br>
+</div></div>
+
+<div class="row-md">
+<div id = "WordCloud"  class="col-md-10 col-md-offset-2">
+</div></div>
+
+<div class="row-md">
+<div class="col-md-10 col-md-offset-2">
+<h2> Detailed Word Clouds</h2> 
+<p>The following is a word clouds are more detiled word clouds where the red cloud demenostrates the negative words.<br>
+and the green one present the positive words.<br>
+<strong> Please note: sometimes the library that generates the word clouds getts bugged, please refreash
+ the page to fix that issue.</strong></p>
+ 
+ <blockquote>
+<p>Observations:</p>
+<small>In the positive cloud we see that the word 'Wall' is the most frequent which may mean that the sentiment analysis tool <br>
+was not accurate enough and takes the word wall which most likely resembles the mexical wall that trump wants to build in peoples <br>
+tweets which may be a sarcastic tweet, or it may mean that in the tweets we have alot of people support the wall.</small>
+<small>in the negative cloud we can see that '$100' appears to be the most frequent word which may mean that in that time period<br>
+there was a fine or a negative thing that costs that much.</small>
+</blockquote>
+<br><br>
+</div></div>
+
+
+
+</div></div>
+
+<div class="container">
+    <div class="row-md">
+        <div id = "WordCloud-pos" class="col-lg-6">
+            <h3> Positive Word Cloud</h3> 
+
+        </div>
+        <div id = "WordCloud-neg" class="col-lg-6">
+            <h3> Negative Word Cloud</h3> 
+
+        </div>
+    </div>
+</div>
+
+<br><br>
+<div class="container-fluid">
+<div class="row-md">
+<div class="col-md-10 col-md-offset-2">
+<h2>Custom Analysis<br></h2>
+<p>In this  section you will be able to do further analysis on the data through interactivity with the map.<br>
+please click on the button below to go to the custom analysis page.<br></p>
+<input type="button" class="btn btn-info" value="Custom Analysis" onclick="location.href = 'page2.html';">
+</div></div>
+</div>
+<br><br>
+<div class="panel panel-default">
+  <div class="panel-footer" style="text-align:center;">FIT5147</div>
+</div>
+
+</body>
+
+<!--Script to draw full word cloud-->
+<script src="wordcloud.js" type="text/javascript"></script>
+<!--Script to draw detailed word clouds-->
+<script src="detailedwordcloud.js" type="text/javascript"></script>
+<!--Creating the map-->
+<script src="drawdatamap.js" type="text/javascript"></script>
+
+</html>
